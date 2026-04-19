@@ -170,7 +170,7 @@ Returns log entries stored in memory.
 |---|---|---|
 | `seq` | integer | Globally unique, monotonically increasing sequence number. Used for ordering, deduplication, and continuity tracking |
 | `service` | string | Service that produced this log |
-| `phase` | string | Lifecycle phase when the log was produced |
+| `phase` | string | Informational lifecycle phase when the log was produced; clients may display or ignore it |
 | `stream` | string | `stdout` or `stderr` |
 | `message` | string | Log line content |
 | `timestamp` | string | RFC 3339 timestamp |

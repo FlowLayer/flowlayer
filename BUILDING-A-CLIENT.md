@@ -53,6 +53,8 @@ message.type == "error"   → protocol-level error, no correlation
 
 Use `snapshot` for the full initial state. Then apply `service_status` events as incremental updates. The server is the single authority on service state.
 
+`running` does not always mean full operational readiness. For services without a readiness probe, `running` can be terminal; for services with a readiness probe, only `ready` indicates full availability.
+
 If a `service_status` event references a service not in your current list, add it. Services are never removed.
 
 ### Log Events
