@@ -103,6 +103,7 @@ The response includes:
 }
 ```
 
+- The `effective_limit: 500` value in this example reflects the current built-in fallback and is not a universal fixed value outside the protocol contract.
 - `effective_limit` is the limit the server actually applied. Use this value for your local buffer size — do not compute limits locally.
 - `truncated` tells you if older entries were dropped.
 
@@ -128,12 +129,14 @@ Always deduplicate by `seq`. Maintain a set of seen sequence numbers and discard
 
 Use the `effective_limit` from `get_logs` responses to cap your local log buffer. When the buffer exceeds this size, trim from the beginning (oldest entries first).
 
+Before the first successful `get_logs`, a client may not know `effective_limit` yet. Do not assume an arbitrary local trim limit before receiving it.
+
 ### Log Continuity Pattern
 
 The recommended pattern for maintaining log continuity:
 
 1. On initial load, send `get_logs` (optionally with `service`)
-2. Store `effective_limit` for buffer management
+2. Store `effective_limit` for buffer management (it is only known after a successful `get_logs`)
 3. Track `lastSeq` as the highest `seq` seen (from both `get_logs` responses and live `log` events)
 4. Append live `log` events as they arrive, deduplicating by `seq`
 5. On reconnection, after receiving `snapshot`, send `get_logs` with `after_seq = lastSeq`

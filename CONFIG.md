@@ -88,6 +88,7 @@ Controls log persistence to disk.
 ### `logView`
 
 Controls default limits for `get_logs` responses. See [PROTOCOL.md](PROTOCOL.md) for the full limit resolution order.
+These defaults apply when the client does not provide `limit`; an explicit client `limit` is used as-is for that response.
 
 | Field | Type | Default | Description |
 |---|---|---|---|

@@ -179,14 +179,18 @@ The `seq` field is the only reliable mechanism for ordering and deduplication of
 
 #### Limit Resolution
 
-When the client does not provide `limit`, the server resolves it in this order:
+When the client does not provide `limit`, the server applies its default policy based on request scope:
 
-1. Per-service `logView.maxEntries` from config (when `service` is specified and a per-service override exists)
-2. `logView.all.maxEntries` from config (when querying all services)
-3. `logView.maxEntries` from config (global default)
-4. Built-in fallback: **500**
+- Without a `service` filter (all-services query):
+  1. `logView.all.maxEntries`
+  2. `logView.maxEntries`
+  3. Built-in fallback: **500**
+- With a `service` filter:
+  1. `services.<name>.logView.maxEntries`
+  2. `logView.maxEntries`
+  3. Built-in fallback: **500**
 
-When the client provides `limit`, it is used as-is with no ceiling.
+When the client provides `limit`, that explicit value is used as-is for the response.
 
 #### Truncation Behavior
 
