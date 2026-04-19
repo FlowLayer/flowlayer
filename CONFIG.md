@@ -104,11 +104,11 @@ Each key in `services` is the service name. Names must not be empty.
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `cmd` | string or string[] | Yes | — | Command to run. A string is split on whitespace with no shell interpretation. An array is passed directly to the process. Prefer the array form for precise control over arguments |
-| `stopCmd` | string or string[] | No | — | Custom stop command. When absent, FlowLayer sends SIGTERM to the process group |
+| `stopCmd` | string or string[] | No | — | Custom stop command. When absent, FlowLayer sends SIGTERM to the process group. `stopCmd` runs with the ambient process environment and does not inherit the service `env` block |
 | `kind` | string | No | `"daemon"` | `"daemon"` (long-running) or `"oneshot"` (run to completion) |
 | `port` | integer | No | `0` | Port for preflight checks. Must be ≥ 0 |
 | `ready` | object | No | — | Readiness probe configuration |
-| `dependsOn` | string[] | No | `[]` | Services that must be ready before this one starts |
+| `dependsOn` | string[] | No | `[]` | Services that must reach terminal startup state before this one starts: `running` if the dependency has no readiness probe, `ready` if it has one |
 | `env` | object | No | `{}` | Environment variables merged into the process environment |
 | `logView.maxEntries` | integer | No | — | Per-service log limit override. Must be > 0 |
 
@@ -119,12 +119,13 @@ Readiness probe configuration. When present, `type` is required.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `type` | string | Yes | `"http"`, `"tcp"`, or `"none"` |
-| `url` | string | For `http` | URL to poll for HTTP 200 |
+| `url` | string | For `http` | URL to poll with GET; success is any 2xx-3xx response |
 | `port` | integer | For `tcp` | TCP port to probe. Falls back to the service `port` if not specified |
 
 ### `dependsOn`
 
 Declares dependencies between services. FlowLayer computes a launch plan from the dependency graph and starts services in parallel waves.
+A dependent waits for each dependency's terminal startup state: `running` when that dependency has no readiness probe, `ready` when it has one.
 
 - Self-references are rejected
 - References to undefined services are rejected
