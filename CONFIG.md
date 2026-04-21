@@ -1,5 +1,8 @@
 # FlowLayer Configuration
 
+> **Documentation:** https://flowlayer.tech  
+> **Entry point:** [README.md](README.md)
+
 FlowLayer is configured with a JSONC file (JSON with comments and trailing commas).
 
 ## File Discovery
