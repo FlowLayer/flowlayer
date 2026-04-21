@@ -1,5 +1,8 @@
 # FlowLayer Protocol V1
 
+> **Documentation:** https://flowlayer.tech  
+> **Entry point:** [README.md](README.md)
+
 WebSocket protocol specification for FlowLayer.
 
 ## Session Model

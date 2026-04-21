@@ -4,9 +4,9 @@
 
 FlowLayer is a local service orchestrator. It starts, monitors, and manages multiple processes from a single configuration file, exposes a real-time WebSocket API, and provides structured log aggregation.
 
-The engine is distributed as a single binary. This repository contains the protocol specification, configuration reference, client-building guide, and releases.
+The server is distributed as a single binary. This repository contains the protocol specification, configuration reference, client-building guide, and releases.
 
-**The engine source code is not included in this repository.**
+**The server source code is not included in this repository.**
 
 ## Installation
 
@@ -83,6 +83,8 @@ When `-s` is provided without `-token` and no token is set in the config, a rand
 - TUI reference client: https://github.com/FlowLayer/tui
 
 ## Documentation
+
+Full documentation: https://flowlayer.tech
 
 - [PROTOCOL.md](PROTOCOL.md) — WebSocket protocol V1 specification
 - [CONFIG.md](CONFIG.md) — Configuration file reference
