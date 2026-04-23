@@ -107,12 +107,12 @@ Each key in `services` is the service name. Names must not be empty.
 | Field | Type | Required | Default | Description |
 |---|---|---|---|---|
 | `cmd` | string or string[] | Yes | — | Command to run. A string is split on whitespace with no shell interpretation. An array is passed directly to the process. Prefer the array form for precise control over arguments |
-| `stopCmd` | string or string[] | No | — | Custom stop command. When absent, FlowLayer sends SIGTERM to the process group. `stopCmd` runs with the ambient process environment and does not inherit the service `env` block |
+| `stopCmd` | string or string[] | No | — | Optional shutdown command executed with the same effective environment as `cmd`. When absent, FlowLayer sends SIGTERM to the process group |
 | `kind` | string | No | `"daemon"` | `"daemon"` (long-running) or `"oneshot"` (run to completion) |
 | `port` | integer | No | `0` | Port for preflight checks. Must be ≥ 0 |
 | `ready` | object | No | — | Readiness probe configuration |
 | `dependsOn` | string[] | No | `[]` | Services that must reach terminal startup state before this one starts: `running` if the dependency has no readiness probe, `ready` if it has one |
-| `env` | object | No | `{}` | Environment variables merged into the process environment |
+| `env` | object | No | `{}` | Environment variables merged with the parent process environment. Service values override duplicate keys and are used by both `cmd` and `stopCmd` |
 | `logView.maxEntries` | integer | No | — | Per-service log limit override. Must be > 0 |
 
 ### `ready`
