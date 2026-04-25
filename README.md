@@ -52,7 +52,7 @@ Each release includes GPG-signed checksums.
 2. Run FlowLayer:
 
 ```
-flowlayer
+flowlayer-server
 ```
 
 FlowLayer auto-discovers the config file, computes a dependency-aware launch plan, starts services in parallel waves, and begins streaming logs.
@@ -62,7 +62,7 @@ FlowLayer auto-discovers the config file, computes a dependency-aware launch pla
 ## CLI
 
 ```
-flowlayer [-c path] [path] [-s bind] [-token value] [--no-color] [--version]
+flowlayer-server [-c path] [path] [-s bind] [-token value] [--no-color] [-h|--help] [--version]
 ```
 
 | Flag | Description |
@@ -72,7 +72,12 @@ flowlayer [-c path] [path] [-s bind] [-token value] [--no-color] [--version]
 | `-s bind` | Enable session API on `host:port` or `port` |
 | `-token value` | Bearer token for API authentication |
 | `--no-color` | Disable ANSI colors in terminal output |
+| `-h`, `--help` | Print onboarding help and exit |
 | `--version` | Print version and exit |
+
+`flowlayer-server` with no arguments prints the same onboarding help and exits with code `0`.
+
+CLI/config errors print `Error: <message>`, then the full help, and exit with code `2`.
 
 If no config path is given, FlowLayer searches the current directory for: `flowlayer.jsonc`, `flowlayer.json`, `flowlayer.config.jsonc`, `flowlayer.config.json`.
 
