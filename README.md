@@ -1,60 +1,81 @@
 # FlowLayer
 
-[Website](https://flowlayer.tech/) · [Official Releases](https://github.com/FlowLayer/flowlayer/releases) · [Distribution Repo](https://github.com/FlowLayer/distribution) · [TUI Source Repo](https://github.com/FlowLayer/tui) · [Issues](https://github.com/FlowLayer/flowlayer/issues)
+**One JSONC file. One deterministic local runtime. Every service in your dev stack, on rails.**
 
-FlowLayer is a local service orchestrator. It starts, monitors, and manages multiple processes from a single configuration file, exposes a real-time WebSocket API, and provides structured log aggregation.
+[![Website](https://img.shields.io/badge/site-flowlayer.tech-4d8eff?style=flat-square)](https://flowlayer.tech/)
+[![Releases](https://img.shields.io/github/v/release/FlowLayer/flowlayer?style=flat-square&color=4d8eff)](https://github.com/FlowLayer/flowlayer/releases)
+[![Protocol](https://img.shields.io/badge/protocol-V1-4d8eff?style=flat-square)](PROTOCOL.md)
+[![License](https://img.shields.io/badge/license-proprietary-lightgrey?style=flat-square)](#license)
 
-This repository is the main public FlowLayer repository and the official release hub.
-Official release assets include:
+[Website](https://flowlayer.tech/) · [Docs](https://flowlayer.tech/explore/) · [Releases](https://github.com/FlowLayer/flowlayer/releases) · [Distribution](https://github.com/FlowLayer/distribution) · [TUI](https://github.com/FlowLayer/tui) · [Issues](https://github.com/FlowLayer/flowlayer/issues)
 
-- `flowlayer-server`
-- `flowlayer-client-tui`
-- global Windows bundles
-- `SHA256SUMS`
+---
 
-Package-manager install methods are maintained in the distribution repository: https://github.com/FlowLayer/distribution.
-The TUI source code repository is: https://github.com/FlowLayer/tui.
+FlowLayer is a **local-first service orchestrator** built for the moment your `docker-compose up` stops being enough.
 
-**The server source code is not included in this repository.**
+You declare your services once. FlowLayer parses dependencies, computes a wave-based startup plan, gates each wave on real readiness probes (TCP, HTTP, or none), aggregates structured logs, and exposes the whole runtime over a single authenticated WebSocket. Same config in, same plan out — every time.
 
-## Installation
+```text
+flowlayer.jsonc  ──►  DAG  ──►  startup waves  ──►  readiness gates  ──►  /ws session truth
+```
 
-- Official binaries are published in the global FlowLayer releases: https://github.com/FlowLayer/flowlayer/releases
-- Linux/macOS install script:
+This repository is the **public release hub** for the project. The server engine source is private; everything you need to **run**, **integrate**, and **extend** FlowLayer lives here:
+
+- pre-built binaries (`flowlayer-server`, `flowlayer-client-tui`)
+- Windows bundles + `SHA256SUMS`
+- the protocol spec, the config reference, the client-builder guide
+
+For package-manager recipes (Homebrew, Scoop, Chocolatey, Winget, `install.sh`), see the [distribution repo](https://github.com/FlowLayer/distribution). The official terminal client lives in [FlowLayer/tui](https://github.com/FlowLayer/tui).
+
+---
+
+## Why FlowLayer
+
+- **Deterministic by construction.** Same valid config, same DAG, same waves, same outcome — no startup races, no "works on my machine".
+- **Readiness-gated, not timing-gated.** Wave N+1 unlocks only when wave N is actually ready. No more `sleep 5 && start-next`.
+- **One protocol, any client.** A documented WebSocket V1 contract — build a TUI, a web UI, an IDE extension, a CI runner. The official TUI is just the first.
+- **Track-only process model.** FlowLayer signals only what it spawned. It will never touch your other workloads.
+- **JSONC, strict-mode.** Comments where they help, errors where they should — unknown fields are rejected loudly, not silently.
+
+---
+
+## Install in 30 seconds
+
+**Linux & macOS** — one-liner:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/FlowLayer/distribution/main/install.sh | sh
 ```
 
-- Homebrew:
+**Homebrew:**
 
 ```bash
 brew tap FlowLayer/distribution https://github.com/FlowLayer/distribution.git
 brew install flowlayer
 ```
 
-- Scoop:
+**Scoop (Windows):**
 
 ```powershell
 scoop bucket add flowlayer https://github.com/FlowLayer/distribution.git
 scoop install flowlayer
 ```
 
-- Chocolatey package has been submitted and is pending Chocolatey Community moderation.
-- Winget manifests are tracked in https://github.com/FlowLayer/distribution and are valid, but local installation remains blocked by a Winget internal error in the test environment.
+**Manual** — grab `flowlayer-server` + `flowlayer-client-tui` from [releases](https://github.com/FlowLayer/flowlayer/releases).
 
-## Verification
+> Chocolatey package is in Community moderation. Winget manifests are tracked in the [distribution repo](https://github.com/FlowLayer/distribution); local install is currently blocked by an upstream Winget issue in our test matrix.
 
-1. Download your binary and `SHA256SUMS` from https://github.com/FlowLayer/flowlayer/releases.
-2. Verify checksums with:
+### Verify the download
 
 ```bash
 sha256sum -c SHA256SUMS
 ```
 
-## Quick Start
+---
 
-1. Create a `flowlayer.jsonc` in your project directory:
+## Quick start
+
+Drop a `flowlayer.jsonc` into your project root:
 
 ```jsonc
 {
@@ -79,25 +100,38 @@ sha256sum -c SHA256SUMS
 }
 ```
 
-2. Run FlowLayer:
+Then run:
 
-```
+```bash
 flowlayer-server
 ```
 
-FlowLayer auto-discovers the config file, computes a dependency-aware launch plan, starts services in parallel waves, and begins streaming logs.
+FlowLayer auto-discovers the config, computes the dependency-aware launch plan, starts services in parallel waves, gates `worker` on `api`'s HTTP readiness, and starts streaming logs.
 
-3. Connect to the WebSocket API at `ws://127.0.0.1:6999/ws` with an `Authorization: Bearer my-token` header.
+Open a session from the official TUI:
+
+```bash
+flowlayer-client-tui -config ./flowlayer.jsonc
+```
+
+…or talk straight to the protocol:
+
+```text
+ws://127.0.0.1:6999/ws
+Authorization: Bearer my-token
+```
+
+---
 
 ## CLI
 
-```
+```text
 flowlayer-server [-c path] [path] [-s bind] [-token value] [--no-color] [-h|--help] [--version]
 ```
 
 | Flag | Description |
 |---|---|
-| `-c path` or `--config path` | Path to config file |
+| `-c path` / `--config path` | Path to config file |
 | `[path]` | Positional alternative to `-c` |
 | `-s bind` | Enable session API on `host:port` or `port` |
 | `-token value` | Bearer token for API authentication |
@@ -105,27 +139,39 @@ flowlayer-server [-c path] [path] [-s bind] [-token value] [--no-color] [-h|--he
 | `-h`, `--help` | Print onboarding help and exit |
 | `--version` | Print version and exit |
 
-`flowlayer-server` with no arguments prints the same onboarding help and exits with code `0`.
+`flowlayer-server` with no arguments prints onboarding help and exits with code `0`. Config or CLI errors print `Error: <message>`, the full help, and exit `2`.
 
-CLI/config errors print `Error: <message>`, then the full help, and exit with code `2`.
+If no config path is given, FlowLayer searches the current directory in order: `flowlayer.jsonc`, `flowlayer.json`, `flowlayer.config.jsonc`, `flowlayer.config.json`.
 
-If no config path is given, FlowLayer searches the current directory for: `flowlayer.jsonc`, `flowlayer.json`, `flowlayer.config.jsonc`, `flowlayer.config.json`.
+When `-s` is provided without `-token` and the config defines none, a random token is generated and printed at boot.
 
-When `-s` is provided without `-token` and no token is set in the config, a random token is generated and printed at boot.
-
-## Clients
-
-- TUI source repository: https://github.com/FlowLayer/tui
-- Official TUI binaries are published with the global FlowLayer releases: https://github.com/FlowLayer/flowlayer/releases
+---
 
 ## Documentation
 
-Full documentation: https://flowlayer.tech
+| Document | What you get |
+|---|---|
+| [PROTOCOL.md](PROTOCOL.md) | The complete WebSocket V1 contract — message envelopes, command flow, events, errors |
+| [CONFIG.md](CONFIG.md) | The JSONC schema — every field, every default, every readiness probe |
+| [BUILDING-A-CLIENT.md](BUILDING-A-CLIENT.md) | Step-by-step client implementation guide — handshake, snapshot merging, reconnect strategy |
 
-- [PROTOCOL.md](PROTOCOL.md) — WebSocket protocol V1 specification
-- [CONFIG.md](CONFIG.md) — Configuration file reference
-- [BUILDING-A-CLIENT.md](BUILDING-A-CLIENT.md) — Guide to building a FlowLayer client
+Full operator and architecture docs: **[flowlayer.tech/explore/](https://flowlayer.tech/explore/)**.
 
-## Issues and Roadmap
+---
 
-Use [GitHub Issues](https://github.com/FlowLayer/flowlayer/issues) for bug reports, feature requests, and roadmap discussion.
+## Clients
+
+- **Official TUI** — source: [FlowLayer/tui](https://github.com/FlowLayer/tui), binary: `flowlayer-client-tui` shipped in the global release.
+- **Custom clients** — read [BUILDING-A-CLIENT.md](BUILDING-A-CLIENT.md). The protocol is intentionally minimal; a working client fits in a single afternoon.
+
+---
+
+## Issues & roadmap
+
+Bug reports, feature ideas, and roadmap discussion live on [GitHub Issues](https://github.com/FlowLayer/flowlayer/issues).
+
+The server engine is closed-source for now, but the **protocol, the config schema, and the client surface are public and stable** — alternative clients are welcome and supported.
+
+## License
+
+The release artifacts in this repository are distributed under the terms shipped in each release. The protocol, config schema, and client-builder guide are public reference material.
