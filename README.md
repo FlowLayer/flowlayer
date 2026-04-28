@@ -1,26 +1,56 @@
 # FlowLayer
 
-[Website](https://flowlayer.tech/) · [Releases](https://github.com/FlowLayer/flowlayer/releases) · [Issues](https://github.com/FlowLayer/flowlayer/issues)
+[Website](https://flowlayer.tech/) · [Official Releases](https://github.com/FlowLayer/flowlayer/releases) · [Distribution Repo](https://github.com/FlowLayer/distribution) · [TUI Source Repo](https://github.com/FlowLayer/tui) · [Issues](https://github.com/FlowLayer/flowlayer/issues)
 
 FlowLayer is a local service orchestrator. It starts, monitors, and manages multiple processes from a single configuration file, exposes a real-time WebSocket API, and provides structured log aggregation.
 
-The server is distributed as a single binary. This repository contains the protocol specification, configuration reference, client-building guide, and releases.
+This repository is the main public FlowLayer repository and the official release hub.
+Official release assets include:
+
+- `flowlayer-server`
+- `flowlayer-client-tui`
+- global Windows bundles
+- `SHA256SUMS`
+
+Package-manager install methods are maintained in the distribution repository: https://github.com/FlowLayer/distribution.
+The TUI source code repository is: https://github.com/FlowLayer/tui.
 
 **The server source code is not included in this repository.**
 
 ## Installation
 
-Download the latest binary from [Releases](https://github.com/FlowLayer/flowlayer/releases).
+- Official binaries are published in the global FlowLayer releases: https://github.com/FlowLayer/flowlayer/releases
+- Linux/macOS install script:
 
-Binaries are available for:
+```bash
+curl -fsSL https://raw.githubusercontent.com/FlowLayer/distribution/main/install.sh | sh
+```
 
-| OS | Architecture |
-|---|---|
-| Linux | amd64, arm64 |
-| macOS | amd64, arm64 |
-| Windows | amd64, arm64 |
+- Homebrew:
 
-Each release includes GPG-signed checksums.
+```bash
+brew tap FlowLayer/distribution https://github.com/FlowLayer/distribution.git
+brew install flowlayer
+```
+
+- Scoop:
+
+```powershell
+scoop bucket add flowlayer https://github.com/FlowLayer/distribution.git
+scoop install flowlayer
+```
+
+- Chocolatey package has been submitted and is pending Chocolatey Community moderation.
+- Winget manifests are tracked in https://github.com/FlowLayer/distribution and are valid, but local installation remains blocked by a Winget internal error in the test environment.
+
+## Verification
+
+1. Download your binary and `SHA256SUMS` from https://github.com/FlowLayer/flowlayer/releases.
+2. Verify checksums with:
+
+```bash
+sha256sum -c SHA256SUMS
+```
 
 ## Quick Start
 
@@ -85,7 +115,8 @@ When `-s` is provided without `-token` and no token is set in the config, a rand
 
 ## Clients
 
-- TUI reference client: https://github.com/FlowLayer/tui
+- TUI source repository: https://github.com/FlowLayer/tui
+- Official TUI binaries are published with the global FlowLayer releases: https://github.com/FlowLayer/flowlayer/releases
 
 ## Documentation
 
