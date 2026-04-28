@@ -1,11 +1,10 @@
 # Building a FlowLayer Client
 
-> **Documentation:** https://flowlayer.tech  
-> **Entry point:** [README.md](README.md)
+> **Docs:** <https://flowlayer.tech> &nbsp;·&nbsp; **Entry point:** [README.md](README.md) &nbsp;·&nbsp; **Protocol:** [PROTOCOL.md](PROTOCOL.md)
 
-This document describes the expected behavior of a correct FlowLayer client. It covers everything needed to build one in any language. The only requirements are a WebSocket library and a JSON parser.
+A correct FlowLayer client fits in an afternoon. The protocol is intentionally small — a WebSocket library and a JSON parser are everything you need. Web UI, IDE plugin, CLI, mobile dashboard, CI runner: **same contract, every language**.
 
-For the complete protocol specification, see [PROTOCOL.md](PROTOCOL.md).
+This guide walks you through every behavior the server expects from your client, in the order you'll implement them. For the full message catalog, jump to [PROTOCOL.md](PROTOCOL.md).
 
 ## Connecting
 

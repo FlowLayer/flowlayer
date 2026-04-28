@@ -1,7 +1,8 @@
 # FlowLayer Configuration
 
-> **Documentation:** https://flowlayer.tech  
-> **Entry point:** [README.md](README.md)
+> **Docs:** <https://flowlayer.tech> &nbsp;·&nbsp; **Entry point:** [README.md](README.md) &nbsp;·&nbsp; **Protocol:** [PROTOCOL.md](PROTOCOL.md)
+
+One JSONC file describes your entire local stack: which services exist, how they depend on each other, when they're considered ready, and how the session API is exposed. **Strict-mode parsing** — unknown fields are rejected, typos surface immediately, your config is the contract.
 
 FlowLayer is configured with a JSONC file (JSON with comments and trailing commas).
 

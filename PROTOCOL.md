@@ -1,7 +1,10 @@
 # FlowLayer Protocol V1
 
-> **Documentation:** https://flowlayer.tech  
-> **Entry point:** [README.md](README.md)
+> **Docs:** <https://flowlayer.tech> &nbsp;·&nbsp; **Entry point:** [README.md](README.md) &nbsp;·&nbsp; **Build a client:** [BUILDING-A-CLIENT.md](BUILDING-A-CLIENT.md)
+
+The complete WebSocket contract between a FlowLayer server and any client. **One transport, one envelope, one set of message types** — small enough to read in one sitting, stable enough to build on.
+
+If you can open a WebSocket and parse JSON, you can write a FlowLayer client. This document tells you exactly how.
 
 WebSocket protocol specification for FlowLayer.
 
