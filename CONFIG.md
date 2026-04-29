@@ -29,7 +29,8 @@ Unknown fields are rejected. The parser uses strict mode — typos in field name
 
   // Log persistence to disk (JSONL files)
   "logs": {
-    "dir": "./logs"                  // directory for JSONL projection
+    "dir": "./logs",                 // directory for JSONL projection
+    "bufferSize": 5000               // per-service in-memory ring buffer cap
   },
 
   // Default log retrieval limits for get_logs
@@ -88,6 +89,9 @@ Controls log persistence to disk.
 | Field | Type | Default | Description |
 |---|---|---|---|
 | `dir` | string | — | Directory for JSONL log files. When set, FlowLayer writes `all.jsonl` and `<service>.jsonl` files |
+| `bufferSize` | integer | `5000` | Per-service in-memory ring buffer capacity. When the buffer is full, the oldest entries are evicted from RAM. Must be > 0 when provided |
+
+**In-memory vs on-disk retention.** FlowLayer keeps only the most recent `bufferSize` entries per service in RAM, so `get_logs` stays fast and memory bounded even on long sessions. When `logs.dir` is set, evicted entries remain readable on disk via the JSONL projection. When `logs.dir` is empty, evicted entries are lost — the server logs a warning at boot to make this trade-off explicit.
 
 ### `logView`
 
@@ -195,6 +199,7 @@ A full configuration managing a Node.js API, a dependent frontend, and a Docker-
 | `kind` not `daemon` or `oneshot` | Rejected |
 | `port` < 0 | Rejected |
 | `logView.maxEntries` ≤ 0 | Rejected |
+| `logs.bufferSize` ≤ 0 | Rejected |
 | `session.token` set to empty string | Rejected |
 | `session.bind` port outside 1–65535 | Rejected |
 | `dependsOn` references itself | Rejected |

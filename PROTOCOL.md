@@ -135,7 +135,7 @@ Services are sorted alphabetically. A service with no known state has `status: "
 
 ### `get_logs`
 
-Returns log entries stored in memory.
+Returns log entries. The server keeps a bounded per-service in-memory ring buffer (configurable via `logs.bufferSize`, default 5000); when `logs.dir` is set, entries also persist to JSONL files. Backward pagination via `before_seq` transparently consults disk when the requested range predates the in-memory ring.
 
 **Request payload** (all fields optional):
 
@@ -143,7 +143,8 @@ Returns log entries stored in memory.
 |---|---|---|
 | `service` | string | Filter by service name. Omit to get logs from all services |
 | `limit` | integer | Maximum number of entries to return. Omit to let the server decide |
-| `after_seq` | integer | Only return entries with `seq` strictly greater than this value |
+| `after_seq` | integer | Only return entries with `seq` strictly greater than this value (forward pagination / replay) |
+| `before_seq` | integer | Only return entries with `seq` strictly less than this value (backward pagination / “load older”). Must be `> 0`. Mutually exclusive with `after_seq` |
 
 **Response** `result.data`:
 
@@ -200,9 +201,20 @@ When the client provides `limit`, that explicit value is used as-is for the resp
 
 #### Truncation Behavior
 
-- Without `after_seq`: all matching entries are fetched, then the last `effective_limit` entries are returned (tail truncation)
+- Without `after_seq` or `before_seq`: the most recent entries up to `effective_limit` are returned (tail truncation)
 - With `after_seq`: entries with `seq > after_seq` are fetched, then the last `effective_limit` entries are returned
+- With `before_seq`: entries with `seq < before_seq` are fetched, then the last `effective_limit` entries (chronologically nearest to `before_seq`) are returned
 - `truncated` is `true` when entries were dropped by the limit
+
+#### Backward pagination and disk fallback
+
+`before_seq` is intended for “load older” UX (scroll-up in a log viewer). The server first reads matching entries from the in-memory ring; if the ring head is more recent than `before_seq` and the entries the client wants have been evicted, the server transparently reads the missing range from the JSONL projection (when `logs.dir` is configured). Without `logs.dir`, the response is bounded to whatever remains in RAM.
+
+#### Errors
+
+| Error code | Trigger |
+|---|---|
+| `invalid_payload` | `limit <= 0`, `before_seq <= 0`, malformed JSON, or both `after_seq` and `before_seq` set |
 
 ### `start_service`
 
