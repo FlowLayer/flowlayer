@@ -121,6 +121,18 @@ To fetch only new logs (for example, after reconnection), include `after_seq` se
 
 This returns only entries with `seq > 42`.
 
+### Using `before_seq` (backward pagination)
+
+For "load older" UX (e.g. scrolling up in a log viewer), include `before_seq` set to the lowest `seq` you currently hold:
+
+```json
+{"type": "command", "id": "...", "name": "get_logs", "payload": {"before_seq": 42, "limit": 200}}
+```
+
+This returns up to `limit` entries with `seq < 42`. The server first reads from the in-memory ring buffer (`logs.bufferSize`); when the requested range predates the ring head and `logs.dir` is configured, the server transparently consults the JSONL projection on disk. Without `logs.dir`, backward pagination is bounded to whatever remains in RAM.
+
+`after_seq` and `before_seq` are mutually exclusive; sending both yields `invalid_payload`.
+
 ### Deduplication
 
 The same log entry can arrive through two paths:
