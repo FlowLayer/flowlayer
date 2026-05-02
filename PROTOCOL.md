@@ -161,7 +161,7 @@ Returns log entries. The server keeps a bounded per-service in-memory ring buffe
     }
   ],
   "truncated": false,
-  "effective_limit": 500
+  "effective_limit": 200
 }
 ```
 
@@ -191,13 +191,14 @@ When the client does not provide `limit`, the server applies its default policy 
 - Without a `service` filter (all-services query):
   1. `logView.all.maxEntries`
   2. `logView.maxEntries`
-  3. Built-in fallback: **500**
+  3. `logs.bufferSize` default (default: **5000**)
 - With a `service` filter:
   1. `services.<name>.logView.maxEntries`
   2. `logView.maxEntries`
-  3. Built-in fallback: **500**
+  3. `logs.bufferSize` default (default: **5000**)
 
 When the client provides `limit`, that explicit value is used as-is for the response.
+`effective_limit` always reflects the applied value: explicit `limit`, matching `logView` policy, or the default derived from `logs.bufferSize`.
 
 #### Truncation Behavior
 
@@ -209,6 +210,7 @@ When the client provides `limit`, that explicit value is used as-is for the resp
 #### Backward pagination and disk fallback
 
 `before_seq` is intended for “load older” UX (scroll-up in a log viewer). The server first reads matching entries from the in-memory ring; if the ring head is more recent than `before_seq` and the entries the client wants have been evicted, the server transparently reads the missing range from the JSONL projection (when `logs.dir` is configured). Without `logs.dir`, the response is bounded to whatever remains in RAM.
+Requests without `before_seq` (including `after_seq` replay) are served from the in-memory ring only.
 
 #### Errors
 

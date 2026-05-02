@@ -103,13 +103,16 @@ The response includes:
 {
   "entries": [...],
   "truncated": false,
-  "effective_limit": 500
+  "effective_limit": 200
 }
 ```
 
-- The `effective_limit: 500` value in this example reflects the current built-in fallback and is not a universal fixed value outside the protocol contract.
+- The `effective_limit` value in examples reflects server-side configuration and is not a universal fixed value outside the protocol contract.
+- When no explicit `limit` and no `logView` override apply, the server default comes from `logs.bufferSize` (`5000` by default).
 - `effective_limit` is the limit the server actually applied. Use this value for your local buffer size — do not compute limits locally.
 - `truncated` tells you if older entries were dropped.
+
+When handling service-filtered views, bind each `get_logs`/replay response to the service target used by the request. If selection changes before a response arrives, ignore stale responses that no longer match the active target.
 
 ### Using `after_seq`
 
