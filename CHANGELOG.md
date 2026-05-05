@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 Releases are published at <https://github.com/FlowLayer/flowlayer/releases> and contain both binaries (`flowlayer-server` and `flowlayer-client-tui`) plus a global `SHA256SUMS` covering every asset.
 
+## [1.1.1] - 2026-05-05
+
+### Changed
+
+- TUI: logs follow mode restored on initial load.
+- TUI: older logs pagination stabilized.
+- TUI: WebSocket client read limit increased to handle larger `get_logs` responses.
+- TUI: clearer fetch/history diagnostics.
+- Server: default `get_logs` limit now aligns with `logs.bufferSize`.
+- Distribution: Homebrew and Scoop updated for v1.1.1.
+
 ## [1.1.0] - 2026-04-29
 
 ### Added — server
@@ -36,5 +47,6 @@ Releases are published at <https://github.com/FlowLayer/flowlayer/releases> and 
 
 - New sections on backward pagination and the JSONL disk projection in `PROTOCOL.md`, `BUILDING-A-CLIENT.md`, and the public site (`/api-reference/logs/`, `/protocol/`, `/tui/`).
 
+[1.1.1]: https://github.com/FlowLayer/flowlayer/releases/tag/v1.1.1
 [1.1.0]: https://github.com/FlowLayer/flowlayer/releases/tag/v1.1.0
 [1.0.0]: https://github.com/FlowLayer/flowlayer/releases/tag/v1.0.0
