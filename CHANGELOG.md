@@ -26,6 +26,7 @@ Releases are published at <https://github.com/FlowLayer/flowlayer/releases> and 
 
 - `get_logs` enforces mutual exclusion between `after_seq` and `before_seq`; supplying both is rejected with a clean error.
 - The server's `LogsTail`, `LogsAfter` and `LogsBefore` API surface is now bounded and never serialises the full buffer, regardless of how large it grows.
+- `get_logs` default limit resolution now falls back to `logs.bufferSize` (default `5000`) when no explicit `limit` and no applicable `logView` policy are provided, replacing the previous internal `500` fallback.
 
 ### Fixed
 

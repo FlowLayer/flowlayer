@@ -35,9 +35,9 @@ Unknown fields are rejected. The parser uses strict mode — typos in field name
 
   // Default log retrieval limits for get_logs
   "logView": {
-    "maxEntries": 500,               // global default limit
+    "maxEntries": 500,               // explicit global override (request.limit still wins)
     "all": {
-      "maxEntries": 800              // limit when querying all services
+      "maxEntries": 800              // explicit override when querying all services
     }
   },
 
@@ -100,10 +100,16 @@ These defaults apply when the client does not provide `limit`; an explicit clien
 
 | Field | Type | Default | Description |
 |---|---|---|---|
-| `maxEntries` | integer | — | Global default limit. Must be > 0 when provided |
+| `maxEntries` | integer | — | Explicit global override when clients omit `limit`. Must be > 0 when provided |
 | `all.maxEntries` | integer | — | Override when querying all services (no `service` filter). Must be > 0 |
 
-When no limit is configured and the client does not specify one, the built-in fallback is **500**.
+When a client omits `limit`, precedence is:
+
+1. `services.<name>.logView.maxEntries` (service query) or `logView.all.maxEntries` (all-services query)
+2. `logView.maxEntries`
+3. `logs.bufferSize` default (default: **5000**)
+
+When a client provides `limit`, that explicit value is applied.
 
 ## Service Fields
 
@@ -152,6 +158,7 @@ A full configuration managing a Node.js API, a dependent frontend, and a Docker-
   },
   "logView": {
     "maxEntries": 500,
+    // Intentional override for this example; if omitted, logs.bufferSize determines the default limit
     "all": {
       "maxEntries": 800
     }
