@@ -63,7 +63,7 @@ scoop install flowlayer
 
 **Manual** — grab `flowlayer-server` + `flowlayer-client-tui` from [releases](https://github.com/FlowLayer/flowlayer/releases).
 
-> Chocolatey package is in Community moderation. Winget manifests are tracked in the [distribution repo](https://github.com/FlowLayer/distribution); local install is currently blocked by an upstream Winget issue in our test matrix.
+> Chocolatey package is approved on Chocolatey Community and can be installed with `choco install flowlayer`. Winget manifests are tracked in the [distribution repo](https://github.com/FlowLayer/distribution); local install is currently blocked by an upstream Winget issue in our test matrix.
 
 ### Verify the download
 
