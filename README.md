@@ -100,19 +100,21 @@ Drop a `flowlayer.jsonc` into your project root:
 }
 ```
 
-Then run:
+Then start the server:
 
 ```bash
 flowlayer-server
 ```
 
-FlowLayer auto-discovers the config, computes the dependency-aware launch plan, starts services in parallel waves, gates `worker` on `api`'s HTTP readiness, and starts streaming logs.
+FlowLayer auto-discovers the config, computes the dependency-aware launch plan, starts services in parallel waves, gates `worker` on `api`'s HTTP readiness, and starts streaming logs. The server listens on `127.0.0.1:6999` because the config sets `session.bind`.
 
 Open a session from the official TUI:
 
 ```bash
-flowlayer-client-tui -config ./flowlayer.jsonc
+flowlayer-client-tui -addr 127.0.0.1:6999 -token my-token
 ```
+
+The TUI connects to the server address with `-addr`; `my-token` is the same Bearer token configured in `session.token`.
 
 …or talk straight to the protocol:
 

@@ -71,7 +71,7 @@ CLI flags always take precedence over config file values. When both are specifie
 
 ### `session`
 
-Controls the WebSocket/HTTP API server.
+Controls the WebSocket/HTTP API server in `flowlayer-server`.
 
 | Field | Type | Default | Description |
 |---|---|---|---|
@@ -81,6 +81,29 @@ Controls the WebSocket/HTTP API server.
 The session API is only started when `bind` is configured or the `-s` CLI flag is used. CLI flags (`-s`, `-token`) take precedence over config values.
 
 When the API is enabled without a token (neither in config nor CLI), a random token (`fl_<uuid>`) is generated and printed at boot.
+
+#### Server `bind` vs TUI `addr`
+
+`session.bind` is a server setting: it tells `flowlayer-server` where to listen.
+
+The official TUI is a separate client. In direct mode, pass the connection values explicitly:
+
+```bash
+flowlayer-client-tui -addr 127.0.0.1:6999 -token my-secret-token
+```
+
+In TUI config mode, the client reads `session.addr` and `session.token` from its config file:
+
+```jsonc
+{
+  "session": {
+    "addr": "127.0.0.1:6999",
+    "token": "my-secret-token"
+  }
+}
+```
+
+Do not pass a server-only config that contains `session.bind` to `flowlayer-client-tui -config`; the TUI parses config strictly and expects the client connection address as `session.addr`.
 
 ### `logs`
 
