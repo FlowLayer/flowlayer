@@ -61,9 +61,22 @@ scoop bucket add flowlayer https://github.com/FlowLayer/distribution.git
 scoop install flowlayer
 ```
 
+**Winget (Windows):**
+
+```powershell
+winget source update
+winget install FlowLayer.FlowLayer
+```
+
+**Chocolatey (Windows):**
+
+```powershell
+choco install flowlayer
+```
+
 **Manual** — grab `flowlayer-server` + `flowlayer-client-tui` from [releases](https://github.com/FlowLayer/flowlayer/releases).
 
-> Chocolatey package is approved on Chocolatey Community and can be installed with `choco install flowlayer`. Winget manifests are tracked in the [distribution repo](https://github.com/FlowLayer/distribution); local install is currently blocked by an upstream Winget issue in our test matrix.
+> Homebrew, Scoop, Winget, Chocolatey, the install script, and GitHub Releases are available for FlowLayer 1.1.1. Winget is the official Windows Package Manager source and installs both `flowlayer-server` and `flowlayer-client-tui`.
 
 ### Verify the download
 
